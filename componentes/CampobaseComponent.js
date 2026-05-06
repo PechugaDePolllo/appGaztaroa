@@ -13,18 +13,40 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
+import { connect } from 'react-redux';
+import {
+  fetchExcursiones,
+  fetchComentarios,
+  fetchCabeceras,
+  fetchActividades,
+} from '../redux/ActionCreators';
+
 import Calendario from './CalendarioComponent';
 import DetalleExcursion from './DetalleExcursionComponent';
 import Contacto from './ContactoComponent';
 import QuienesSomos from './QuienesSomosComponent';
 import Home from './HomeComponent';
 
-import { EXCURSIONES } from '../comun/excursiones';
-
 import { colorGaztaroaOscuro, colorGaztaroaClaro } from '../comun/comun';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
+
+const mapStateToProps = (state) => {
+  return {
+    excursiones: state.excursiones,
+    comentarios: state.comentarios,
+    cabeceras: state.cabeceras,
+    actividades: state.actividades,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchExcursiones: () => dispatch(fetchExcursiones()),
+  fetchComentarios: () => dispatch(fetchComentarios()),
+  fetchCabeceras: () => dispatch(fetchCabeceras()),
+  fetchActividades: () => dispatch(fetchActividades()),
+});
 
 /* ---------------- BOTÓN MENÚ ---------------- */
 
@@ -46,7 +68,6 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
-
         <View style={styles.drawerHeader}>
           <View style={styles.drawerHeaderImageContainer}>
             <Image
@@ -61,7 +82,6 @@ function CustomDrawerContent(props) {
         </View>
 
         <DrawerItemList {...props} />
-
       </SafeAreaView>
     </DrawerContentScrollView>
   );
@@ -70,11 +90,11 @@ function CustomDrawerContent(props) {
 /* ---------------- CLASE PRINCIPAL ---------------- */
 
 class Campobase extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      excursiones: EXCURSIONES,
-    };
+  componentDidMount() {
+    this.props.fetchExcursiones();
+    this.props.fetchComentarios();
+    this.props.fetchCabeceras();
+    this.props.fetchActividades();
   }
 
   /* ---------- CONFIGURACIÓN CABECERA ---------- */
@@ -96,17 +116,25 @@ class Campobase extends Component {
         initialRouteName="Home"
         screenOptions={{
           headerTintColor: '#fff',
-          headerStyle: { backgroundColor: '#015afc' },
+          headerStyle: { backgroundColor: colorGaztaroaOscuro },
           headerTitleStyle: { color: '#fff' },
         }}
       >
         <Stack.Screen
           name="Home"
-          component={Home}
           options={({ navigation }) =>
             this.menuHeaderOptions('Campo Base', navigation)
           }
-        />
+        >
+          {(props) => (
+            <Home
+              {...props}
+              cabeceras={this.props.cabeceras.cabeceras || []}
+              excursiones={this.props.excursiones.excursiones || []}
+              actividades={this.props.actividades.actividades || []}
+            />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     );
   };
@@ -119,7 +147,7 @@ class Campobase extends Component {
         initialRouteName="Calendario"
         screenOptions={{
           headerTintColor: '#fff',
-          headerStyle: { backgroundColor: '#015afc' },
+          headerStyle: { backgroundColor: colorGaztaroaOscuro },
           headerTitleStyle: { color: '#fff' },
         }}
       >
@@ -132,7 +160,7 @@ class Campobase extends Component {
           {(props) => (
             <Calendario
               {...props}
-              excursiones={this.state.excursiones}
+              excursiones={this.props.excursiones.excursiones || []}
             />
           )}
         </Stack.Screen>
@@ -147,7 +175,8 @@ class Campobase extends Component {
           {(props) => (
             <DetalleExcursion
               {...props}
-              excursiones={this.state.excursiones}
+              excursiones={this.props.excursiones.excursiones || []}
+              comentarios={this.props.comentarios.comentarios || []}
             />
           )}
         </Stack.Screen>
@@ -163,17 +192,23 @@ class Campobase extends Component {
         initialRouteName="QuienesSomos"
         screenOptions={{
           headerTintColor: '#fff',
-          headerStyle: { backgroundColor: '#015afc' },
+          headerStyle: { backgroundColor: colorGaztaroaOscuro },
           headerTitleStyle: { color: '#fff' },
         }}
       >
         <Stack.Screen
           name="QuienesSomos"
-          component={QuienesSomos}
           options={({ navigation }) =>
             this.menuHeaderOptions('Quiénes somos', navigation)
           }
-        />
+        >
+          {(props) => (
+            <QuienesSomos
+              {...props}
+              actividades={this.props.actividades.actividades || []}
+            />
+          )}
+        </Stack.Screen>
       </Stack.Navigator>
     );
   };
@@ -186,7 +221,7 @@ class Campobase extends Component {
         initialRouteName="Contacto"
         screenOptions={{
           headerTintColor: '#fff',
-          headerStyle: { backgroundColor: '#015afc' },
+          headerStyle: { backgroundColor: colorGaztaroaOscuro },
           headerTitleStyle: { color: '#fff' },
         }}
       >
@@ -283,7 +318,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   drawerHeader: {
-    backgroundColor: '#015afc',
+    backgroundColor: colorGaztaroaOscuro,
     height: 100,
     flexDirection: 'row',
     alignItems: 'center',
@@ -310,4 +345,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Campobase;
+export default connect(mapStateToProps, mapDispatchToProps)(Campobase);

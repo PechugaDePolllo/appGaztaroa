@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { FlatList, View, Image, StyleSheet } from 'react-native';
 import { Card, Text, List, Divider } from 'react-native-paper';
-import { ACTIVIDADES } from '../comun/actividades';
 import { baseUrl } from '../comun/comun';
 
 function Historia() {
@@ -29,13 +28,6 @@ function Historia() {
 }
 
 class QuienesSomos extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      actividades: ACTIVIDADES,
-    };
-  }
-
   renderActividad = ({ item }) => {
     return (
       <View>
@@ -58,6 +50,8 @@ class QuienesSomos extends Component {
   };
 
   render() {
+    const actividades = this.props.actividades || [];
+
     return (
       <View style={styles.container}>
         <Historia />
@@ -66,7 +60,7 @@ class QuienesSomos extends Component {
           <Card.Title title="Actividades" />
           <Card.Content>
             <FlatList
-              data={this.state.actividades}
+              data={actividades}
               renderItem={this.renderActividad}
               keyExtractor={(item) => item.id.toString()}
             />

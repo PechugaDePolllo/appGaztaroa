@@ -1,9 +1,7 @@
 import { Component } from 'react';
-import { View, StyleSheet, ScrollView, FlatList, ImageBackground } from 'react-native';
+import { View, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { Card, Text, Divider, IconButton } from 'react-native-paper';
 import { baseUrl } from '../comun/comun';
-
-import { COMENTARIOS } from '../comun/comentarios';
 
 function RenderExcursion(props) {
   const excursion = props.excursion;
@@ -47,7 +45,7 @@ function RenderExcursion(props) {
 }
 
 function RenderComentario(props) {
-  const comentarios = props.comentarios;
+  const comentarios = props.comentarios || [];
 
   const renderComentarioItem = ({ item }) => {
     return (
@@ -61,7 +59,7 @@ function RenderComentario(props) {
         </Text>
 
         <Text>
-          -- {item.autor}, {new Date(item.dia.replaceAll(' ', '')).toLocaleDateString()}
+          -- {item.autor}, {new Date(item.dia).toLocaleDateString()}
         </Text>
 
         <Divider style={styles.divider} />
@@ -87,7 +85,6 @@ class DetalleExcursion extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      comentarios: COMENTARIOS,
       favoritos: [],
     };
   }
@@ -101,16 +98,19 @@ class DetalleExcursion extends Component {
   render() {
     const { excursionId } = this.props.route.params;
 
+    const excursiones = this.props.excursiones || [];
+    const comentarios = this.props.comentarios || [];
+
     return (
       <ScrollView>
         <RenderExcursion
-          excursion={this.props.excursiones[+excursionId]}
+          excursion={excursiones[+excursionId]}
           favorita={this.state.favoritos.some((el) => el === excursionId)}
           onPress={() => this.marcarFavorito(excursionId)}
         />
 
         <RenderComentario
-          comentarios={this.state.comentarios.filter(
+          comentarios={comentarios.filter(
             (comentario) => comentario.excursionId === excursionId
           )}
         />
