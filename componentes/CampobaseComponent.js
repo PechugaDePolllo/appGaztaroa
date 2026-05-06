@@ -21,6 +21,8 @@ import Home from './HomeComponent';
 
 import { EXCURSIONES } from '../comun/excursiones';
 
+import { colorGaztaroaOscuro, colorGaztaroaClaro } from '../comun/comun';
+
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -32,7 +34,7 @@ function BotonMenu(props) {
       <MaterialCommunityIcons
         name="menu"
         size={40}
-        color={Platform.OS === 'ios' ? '#015afc' : 'white'}
+        color={Platform.OS === 'ios' ? colorGaztaroaOscuro : 'white'}
       />
     </Pressable>
   );
@@ -209,7 +211,7 @@ class Campobase extends Component {
         screenOptions={{
           headerShown: false,
           drawerStyle: {
-            backgroundColor: '#c2d3da',
+            backgroundColor: colorGaztaroaClaro,
           },
         }}
       >

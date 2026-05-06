@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import { View, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { View, StyleSheet, ScrollView, FlatList, ImageBackground } from 'react-native';
 import { Card, Text, Divider, IconButton } from 'react-native-paper';
+import { baseUrl } from '../comun/comun';
 
 import { COMENTARIOS } from '../comun/comentarios';
 
@@ -17,7 +18,7 @@ function RenderExcursion(props) {
         />
 
         <Card.Cover
-          source={require('./imagenes/40Años.png')}
+          source={{ uri: baseUrl + excursion.imagen }}
           style={styles.image}
         />
 
